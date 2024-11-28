@@ -14,11 +14,16 @@ app.use(bodyParser.json());
 
 // 连接 MongoDB
 mongoose.connect('mongodb://localhost:27017/learning_platform', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useNewUrlParser: true,  // 确保连接MongoDB使用新的解析器
+    useUnifiedTopology: true // 确保使用统一的拓扑结构
 })
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
+
+// 根路径路由
+app.get('/', (req, res) => {
+    res.send('Welcome to the Learning Platform API');
+});
 
 // 用户注册路由
 app.post('/api/users/register', async (req, res) => {
