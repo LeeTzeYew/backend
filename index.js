@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 
 // 引入模型
 const User = require('./models/User'); // 确保路径正确
@@ -31,6 +32,23 @@ app.post('/api/users/register', async (req, res) => {
         console.error('Error registering user:', err);
         res.status(500).send('Error registering user');
     }
+});
+
+// 用户登陆路由
+app.post('/api/users/login', async (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).send('Username and password are required');
+    }
+    const user = await User.findOne({ username });
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        return res.status(401).send('Invalid password');
+    }
+    res.send('Login successful');
 });
 
 // 启动服务器
