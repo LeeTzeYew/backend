@@ -51,6 +51,16 @@ app.post('/api/users/login', async (req, res) => {
     res.send('Login successful');
 });
 
+//回放数据接口
+app.get('/api/operation/replay', async (req, res) => {
+    const { userId } = req.query;
+    if (!userId) {
+        return res.status(400).send('User ID is required');
+    }
+    const operations = await OperationModel.find({ userId }).sort({ timestamp: 1 });
+    res.json(operations);
+});
+
 // 启动服务器
 const PORT = 3000;
 app.listen(PORT, () => {
